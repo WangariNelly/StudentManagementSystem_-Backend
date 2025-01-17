@@ -1,7 +1,7 @@
 package com.managementsystem.studentsmanagementsystem.controllers;
 
 import com.managementsystem.studentsmanagementsystem.dtos.LoginRequest;
-import com.managementsystem.studentsmanagementsystem.models.Role;
+import com.managementsystem.studentsmanagementsystem.helpers.JwtResponse;
 import com.managementsystem.studentsmanagementsystem.models.User;
 import com.managementsystem.studentsmanagementsystem.repos.RoleRepository;
 import com.managementsystem.studentsmanagementsystem.services.AuthService;
@@ -13,9 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -46,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -64,15 +67,24 @@ public class AuthController {
             if (isAuthenticated) {
                 String token = jwtUtil.generateToken(firstName, lastName, authentication.getAuthorities());
                 System.out.println("Generated token: " + token);
-                return ResponseEntity.ok("Bearer " + token);
 
+                JwtResponse jwtResponse = new JwtResponse(
+                        "Bearer " + token,
+                        firstName,
+                        lastName,
+                        authentication.getAuthorities().stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList())
+                );
+
+                return ResponseEntity.ok().body(jwtResponse);
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid credentials");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new JwtResponse("Invalid credentials", null, null, null));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid login");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new JwtResponse("Invalid login", null, null, null));
         }
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
