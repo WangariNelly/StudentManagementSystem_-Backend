@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class StudentService {
     @Autowired
- private UserRepository userRepository;
+    private UserRepository userRepository;
 
 //    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
@@ -50,18 +50,18 @@ public class StudentService {
 
 
     //     Soft delete student by setting status to 0
-public boolean deleteStudent(Long studentId) {
-    Optional<User> student = userRepository.findById(studentId);
-    if (student.isPresent()) {
-        User user = student.get();
-        user.setStatus(0);
-        userRepository.save(user);
-        return true;
+    public boolean deleteStudent(Long studentId) {
+        Optional<User> student = userRepository.findById(studentId);
+        if (student.isPresent()) {
+            User user = student.get();
+            user.setStatus(0);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 
-//update
+    //update
     public User updateStudent(Long studentId, User updatedStudent, String photoPath) throws IOException {
         Optional<User> student = userRepository.findById(studentId);
         if (student.isPresent()) {
@@ -77,7 +77,7 @@ public boolean deleteStudent(Long studentId) {
         return null;
     }
 
-//photo upload
+    //photo upload
     public String handlePhotoUpload(Long studentId, byte[] photoData, String filename) throws IOException {
         String newFilename = studentId + "-" + filename;
         String photoPath = "C:/var/log/applications/API/StudentPhotos/" + newFilename;

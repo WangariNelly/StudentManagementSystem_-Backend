@@ -16,12 +16,12 @@ public class DashboardController {
     private StudentService studentService;
 
     @GetMapping("/students/count")
-  public ResponseEntity<Long> getTotalStudentsCount() {
+    public ResponseEntity<Long> getTotalStudentsCount() {
         try{
-        long totalStudents = studentService.getTotalStudentsCount();
-        return ResponseEntity.ok(totalStudents);
-    } catch (Exception e) {
-            return ResponseEntity.status(500).body(0L);
+            long totalStudents = studentService.getTotalStudentsCount();
+            return ResponseEntity.ok(totalStudents);
+        } catch (Exception ex) {
+            return ResponseEntity.status(403).body(0L);
         }
     }
 }

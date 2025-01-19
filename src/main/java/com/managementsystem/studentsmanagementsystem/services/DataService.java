@@ -20,10 +20,10 @@ import java.util.Set;
 
 
 @Service
-public class DataProcessingService {
+public class DataService {
 
 
-private static final String EXCEL_FILE_PATH = "C:/var/log/applications/API/dataprocessing/generated-data.xlsx";
+    private static final String EXCEL_FILE_PATH = "C:/var/log/applications/API/dataprocessing/generated-data.xlsx";
 
     private static final String CSV_FILE_PATH = "C:/var/log/applications/API/dataprocessing/student-data.csv";
 
@@ -74,12 +74,12 @@ private static final String EXCEL_FILE_PATH = "C:/var/log/applications/API/datap
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
 
-            String studentId = row.getCell(0).getStringCellValue(); // Student ID
-            String firstName = row.getCell(1).getStringCellValue(); // First Name
-            String lastName = row.getCell(2).getStringCellValue();  // Last Name
-            int score = (int) row.getCell(5).getNumericCellValue();    // Original Score
+            String studentId = row.getCell(0).getStringCellValue();
+            String firstName = row.getCell(1).getStringCellValue();
+            String lastName = row.getCell(2).getStringCellValue();
+            int score = (int) row.getCell(5).getNumericCellValue();
 
-            int updatedDBScore = score + 5; // Update score before saving to DB
+            int updatedDBScore = score + 5;
 
             // Check if the student exists in the database
             User user = userRepository.findByStudentId(Long.valueOf(studentId));
@@ -88,16 +88,16 @@ private static final String EXCEL_FILE_PATH = "C:/var/log/applications/API/datap
                 user.setLastName(lastName);
                 user.setScore(updatedDBScore);
 
-                // Optionally update roles if necessary
+
                 Set<Role> roles = user.getRoles();
-                // Assume you handle roles accordingly
+
                 user.setRoles(roles);
 
-                userRepository.save(user); // Save the updated user data
+                userRepository.save(user);
             }
         }
 
         workbook.close();
     }
 
-    }
+}

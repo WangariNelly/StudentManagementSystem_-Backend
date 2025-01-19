@@ -24,8 +24,6 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/report")
-
-    //Filtering by pagination to get students
     public ResponseEntity<Page<User>> getStudentsReport(
             @RequestParam(required = false) Long studentId,
             @RequestParam(required = false) String className,
@@ -38,7 +36,7 @@ public class StudentController {
         LocalDate end = endDate != null ? LocalDate.parse(endDate) : null;
 
         Pageable pageable = PageRequest.of(page, size);
-       Page<User> studentsPage = studentService.getFilteredStudents(studentId, className, start, end, pageable);
+        Page<User> studentsPage = studentService.getFilteredStudents(studentId, className, start, end, pageable);
 //        Page<User> studentsPage = studentService.getFilteredStudents(pageable);
 
         return new ResponseEntity<>(studentsPage, HttpStatus.OK);
@@ -56,13 +54,13 @@ public class StudentController {
         }
     }
 
-//Updating student details
+    //Updating student details
     @PutMapping("/update/{studentId}")
     public ResponseEntity<User> updateStudent(@PathVariable Long studentId,
                                               @RequestBody User updatedStudent,
                                               @RequestParam(required = false) MultipartFile photo) throws IOException {
 
-        String photoPath = updatedStudent.getPhotoPath(); // Existing photo if no new upload
+        String photoPath = updatedStudent.getPhotoPath();
 
         if (photo != null && !photo.isEmpty()) {
             // Handle file upload
@@ -84,6 +82,6 @@ public class StudentController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=students_report.xlsx");
-        return new ResponseEntity<>(excelFile, headers, HttpStatus.OK);
+        return new ResponseEntity<>(new byte[0], headers, HttpStatus.OK);
     }
 }

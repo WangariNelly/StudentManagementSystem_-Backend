@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,6 +30,15 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtExceptionHandler jwtExceptionHandler;
+//     private static final String[] SWAGGER_WHITELIST = {
+//             "/v2/api-docs",
+//             "/swagger-resources/**",
+//             "/swagger-ui.*",
+//             "/swagger-resources/configuration/ui",
+//             "/swagger-resources",
+//
+//     };
+
 
     @Autowired
     public SecurityConfig(PasswordEncoder passwordEncoder,
@@ -45,15 +55,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/error","/swagger-ui/**","/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
                         .requestMatchers("/api/dashboard/**", "/api/data/**","/api/students").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtExceptionHandler);
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtExceptionHandler));
 
         return http.build();
     }
