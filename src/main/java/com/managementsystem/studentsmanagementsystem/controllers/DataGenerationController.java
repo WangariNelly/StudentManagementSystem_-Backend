@@ -22,15 +22,13 @@ import java.util.Random;
 @RestController
 public class DataGenerationController {
 
-    private static final String BASE_DIRECTORY = System.getenv("DATA_PROCESSING_DIRECTORY") != null
-            ? System.getenv("DATA_PROCESSING_DIRECTORY")
-            : "C:/var/log/applications/API/dataprocessing";
+    private static final String BASE_DIRECTORY = "C:/var/log/applications/API/dataprocessing";
 
     private static final Logger logger = LoggerFactory.getLogger(DataGenerationController.class);
 
 
     @GetMapping("/api/data/generate")
-    public ResponseEntity<String> generateData(@RequestParam int records) {
+    public ResponseEntity<?> generateData(@RequestParam int records) {
         logger.info("Data generation started for {} records.", records);
 
         try {

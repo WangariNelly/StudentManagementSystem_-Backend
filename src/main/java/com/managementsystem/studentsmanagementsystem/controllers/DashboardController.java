@@ -16,7 +16,6 @@ public class DashboardController {
     private StudentService studentService;
 
     @GetMapping("/students/count")
-    @PreAuthorize("hasRole('USER')")
   public ResponseEntity<Long> getTotalStudentsCount() {
         try{
         long totalStudents = studentService.getTotalStudentsCount();

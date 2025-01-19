@@ -69,7 +69,7 @@ public class AuthController {
                 System.out.println("Generated token: " + token);
 
                 JwtResponse jwtResponse = new JwtResponse(
-                        "Bearer " + token,
+                        token,
                         firstName,
                         lastName,
                         authentication.getAuthorities().stream()
