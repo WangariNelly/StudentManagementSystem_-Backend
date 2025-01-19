@@ -30,15 +30,6 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtExceptionHandler jwtExceptionHandler;
-//     private static final String[] SWAGGER_WHITELIST = {
-//             "/v2/api-docs",
-//             "/swagger-resources/**",
-//             "/swagger-ui.*",
-//             "/swagger-resources/configuration/ui",
-//             "/swagger-resources",
-//
-//     };
-
 
     @Autowired
     public SecurityConfig(PasswordEncoder passwordEncoder,
@@ -58,7 +49,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/error","/swagger-ui/**","/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/resources/**","/api/auth/register", "/api/auth/login", "/error","/favicon.io","/swagger-ui/**","/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
                         .requestMatchers("/api/dashboard/**", "/api/data/**","/api/students").authenticated()
                         .anyRequest().authenticated()
                 )
