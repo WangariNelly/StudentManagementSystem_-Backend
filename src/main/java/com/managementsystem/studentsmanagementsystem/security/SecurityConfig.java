@@ -49,7 +49,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/resources/**","/api/auth/register", "/api/auth/login", "/error","/favicon.io","/swagger-ui/**","/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/resources/**","/api/auth/register", "/api/auth/login", "/error","/favicon.io","/swagger-ui/**","/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/dashboard/**", "/api/data/**","/api/students").authenticated()
                         .anyRequest().authenticated()
                 )

@@ -28,10 +28,10 @@ public class DataService {
     private static final String CSV_FILE_PATH = "C:/var/log/applications/API/dataprocessing/student-data.csv";
 
     @Autowired
-    private UserRepository userRepository; // Assuming you have a UserRepository
+    private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository; // Assuming you need roles for the user
+    private RoleRepository roleRepository;
 
     // Method for processing data and generating CSV
     public void processData() throws IOException {
@@ -48,14 +48,14 @@ public class DataService {
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
 
-//            String studentId = row.getCell(0).getStringCellValue(); // Student ID
+
             Long studentId = (long) row.getCell(0).getNumericCellValue();
-            String firstName = row.getCell(1).getStringCellValue(); // First Name
-            String lastName = row.getCell(2).getStringCellValue();  // Last Name
-            String studentName = firstName + " " + lastName;        // Combine for full name
-            long score = (long)  row.getCell(5).getNumericCellValue();    // Original Score
-            Long updatedCSVScore = (long) (score + 10);  // Score to be written in CSV
-            csvPrinter.printRecord(studentId, studentName, updatedCSVScore);  // Writing to CSV
+            String firstName = row.getCell(1).getStringCellValue();
+            String lastName = row.getCell(2).getStringCellValue();
+            String studentName = firstName + " " + lastName;
+            long score = (long)  row.getCell(5).getNumericCellValue();
+            Long updatedCSVScore = (long) (score + 10);
+            csvPrinter.printRecord(studentId, studentName, updatedCSVScore);
         }
 
         csvPrinter.flush();

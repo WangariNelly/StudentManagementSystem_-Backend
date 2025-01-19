@@ -120,5 +120,4 @@ ng serve
 - **DELETE /api/students/{id}:** Soft delete a student.
 
 ## Submission Details
-- Hosted project on GitHub: Repository Link
 - Demonstration video: Demo Link

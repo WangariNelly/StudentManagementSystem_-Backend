@@ -71,7 +71,7 @@ public class StudentService {
             user.setDob(updatedStudent.getDob());
             user.setClassName(updatedStudent.getClassName());
             user.setScore(updatedStudent.getScore());
-            user.setPhotoPath(photoPath); // Update the photo path if provided
+            user.setPhotoPath(photoPath);
             return userRepository.save(user);
         }
         return null;
