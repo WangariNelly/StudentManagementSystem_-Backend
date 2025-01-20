@@ -56,18 +56,16 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
-            System.out.println("Authentication successful for: " + loginRequest.getUsername());
-            System.out.println("Roles: " + authentication.getAuthorities());
+
 
             String firstName = loginRequest.getUsername().split(" ")[0];
             String lastName = loginRequest.getUsername().split(" ")[1];
 
             boolean isAuthenticated = authService.authenticateUser(firstName, lastName,loginRequest.getPassword());
-            System.out.println("Is Authenticated: " + isAuthenticated);
+
 
             if (isAuthenticated) {
                 String token = jwtUtil.generateToken(firstName, lastName, authentication.getAuthorities());
-                System.out.println("Generated token: " + token);
 
                 JwtResponse jwtResponse = new JwtResponse(
                         token,

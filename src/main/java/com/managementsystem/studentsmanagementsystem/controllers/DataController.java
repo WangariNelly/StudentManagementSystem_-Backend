@@ -72,12 +72,10 @@ public class DataController {
         try {
             Path excelFilePath = Paths.get(EXCEL_FILE_PATH);
 
-            // Check if the Excel file exists
+
             if (Files.exists(excelFilePath)) {
-                // If Excel file exists, generate CSV from it
                 generateCSVFromExcel();
             } else {
-                // If Excel file doesn't exist, create CSV with headers only
                 generateCSVWithHeaders();
             }
             return ResponseEntity.ok("Data processed successfully. CSV file saved at: " + CSV_FILE_PATH);
@@ -110,10 +108,10 @@ public class DataController {
         try (FileInputStream excelFile = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(excelFile)) {
 
-            Sheet sheet = workbook.getSheetAt(0); // Read the first sheet
+            Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // Read the header row
+
             Row headerRow = rowIterator.next();
             Map<String, Integer> headerMap = new HashMap<>();
 
@@ -122,10 +120,8 @@ public class DataController {
                 headerMap.put(headerRow.getCell(i).getStringCellValue().trim(), i);
             }
 
-
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-
 
                 Long studentId = parseLong(getCellValueAsString(row.getCell(headerMap.get("Student ID")))); // Handle Student ID
                 String firstName = getCellValueAsString(row.getCell(headerMap.get("First Name"))); // Handle First Name
@@ -159,12 +155,12 @@ public class DataController {
      */
     private Integer parseInteger(String value) {
         if ("N/A".equals(value)) {
-            return 0; // If the score is "N/A", we set it to 0 or handle as needed
+            return 0;
         }
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            return 0; // Return 0 for invalid scores, or you can handle as you prefer
+            return 0;
         }
     }
 
@@ -289,9 +285,9 @@ public class DataController {
                 dataRow.createCell(2).setCellValue(generateValidName(faker.name().lastName()));
                 dataRow.createCell(3).setCellValue(generateRandomDOB(dateFormatter));
                 dataRow.createCell(4).setCellValue("Class" + (random.nextInt(5) + 1));
-                dataRow.createCell(5).setCellValue(random.nextInt(26) + 55);
+                dataRow.createCell(5).setCellValue(random.nextInt(15) + 55);
                 dataRow.createCell(6).setCellValue(random.nextInt(2));
-                dataRow.createCell(7).setCellValue("N/A");
+                dataRow.createCell(7).setCellValue("");
             }
 
             // Write workbook to file

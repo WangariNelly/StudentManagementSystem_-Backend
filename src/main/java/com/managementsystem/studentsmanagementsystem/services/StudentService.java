@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,14 +39,23 @@ public class StudentService {
         return userRepository.count();
     }
 
-    // Get filtered students with pagination
-    public Page<User> getFilteredStudents(Long studentId, String className, LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        return userRepository.findByStudentIdAndClassNameContainingAndDobBetween(studentId, className, startDate, endDate, pageable);
+
+    public List<User> getAllStudents() {
+        return userRepository.findAll();
     }
 
-//    public Page<User> getFilteredStudents(Pageable pageable) {
-//        return userRepository.findAll(pageable);  // No filters applied
+    public User getStudentById(Long studentId) {
+        return userRepository.findByStudentId(studentId);
+    }
+
+    // Get filtered students with pagination
+//    public Page<User> getFilteredStudents(Long studentId, String className, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+//        return userRepository.findByStudentIdAndClassNameContainingAndDobBetween(studentId, className, startDate, endDate, pageable);
 //    }
+
+    public Page<User> getFilteredStudents(Pageable pageable) {
+        return userRepository.findAll(pageable);  // No filters applied
+    }
 
 
 
@@ -119,5 +129,15 @@ public class StudentService {
 
         // Return the byte array representing the Excel file
         return byteArrayOutputStream.toByteArray();
+    }
+
+    private void validatePhoto(MultipartFile photo) {
+        if (photo.getSize() > 5 * 1024 * 1024) {
+            throw new RuntimeException("Photo size exceeds 5MB limit.");
+        }
+        String contentType = photo.getContentType();
+        if (!contentType.equals("image/png") && !contentType.equals("image/jpeg")) {
+            throw new RuntimeException("Invalid photo type. Only PNG and JPEG are allowed.");
+        }
     }
 }

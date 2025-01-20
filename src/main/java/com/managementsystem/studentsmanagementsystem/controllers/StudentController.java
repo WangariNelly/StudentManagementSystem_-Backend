@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,12 +37,22 @@ public class StudentController {
         LocalDate end = endDate != null ? LocalDate.parse(endDate) : null;
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> studentsPage = studentService.getFilteredStudents(studentId, className, start, end, pageable);
-//        Page<User> studentsPage = studentService.getFilteredStudents(pageable);
+//        Page<User> studentsPage = studentService.getFilteredStudents(studentId, className, start, end, pageable);
+        Page<User> studentsPage = studentService.getFilteredStudents(pageable);
 
         return new ResponseEntity<>(studentsPage, HttpStatus.OK);
     }
 
+
+    @GetMapping
+    public List<User> getAllStudents() {
+        return studentService.getAllStudents();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
+    }
 
     //Delete student
     @DeleteMapping("/delete/{studentId}")
@@ -63,7 +74,6 @@ public class StudentController {
         String photoPath = updatedStudent.getPhotoPath();
 
         if (photo != null && !photo.isEmpty()) {
-            // Handle file upload
             byte[] photoBytes = photo.getBytes();
             photoPath = studentService.handlePhotoUpload(studentId, photoBytes, photo.getOriginalFilename());
         }
@@ -77,7 +87,7 @@ public class StudentController {
     }
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportStudentsReport() throws IOException{
-        List<User> students = studentService.getFilteredStudents(null, null, null, null, Pageable.unpaged()).getContent();
+        List<User> students = studentService.getFilteredStudents(Pageable.unpaged()).getContent();
         byte[] excelFile = studentService.exportStudentsToExcel(students);
 
         HttpHeaders headers = new HttpHeaders();
